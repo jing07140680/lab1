@@ -1,7 +1,7 @@
 version: '2.2'
 services:
   router:
-    image: 'hello:2.0'
+    image: 'jing07140680/my_node:1.0'
     privileged: true
     tty: true
     networks:
@@ -10,14 +10,14 @@ services:
       my_netB:
         ipv4_address: 10.0.15.2
   hostA:
-    image: 'hello:2.0'
+    image: 'jing07140680/my_node:1.0'
     privileged: true
     tty: true
     networks:
       my_netA:
         ipv4_address: 10.0.14.3
   hostB:
-    image: 'hello:2.0'
+    image: 'jing07140680/my_node:1.0'
     privileged: true
     tty: true
     networks:
