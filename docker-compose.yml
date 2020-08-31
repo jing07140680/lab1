@@ -1,0 +1,38 @@
+version: '2.2'
+services:
+  router:
+    image: 'hello:2.0'
+    privileged: true
+    tty: true
+    networks:
+      my_netA:
+        ipv4_address: 10.0.14.2
+      my_netB:
+        ipv4_address: 10.0.15.2
+  hostA:
+    image: 'hello:2.0'
+    privileged: true
+    tty: true
+    networks:
+      my_netA:
+        ipv4_address: 10.0.14.3
+  hostB:
+    image: 'hello:2.0'
+    privileged: true
+    tty: true
+    networks:
+      my_netB:
+        ipv4_address: 10.0.15.3
+networks:
+  my_netA:
+    driver: bridge
+    ipam:
+      config:
+        - subnet: 10.0.14.0/24
+          gateway: 10.0.14.1
+  my_netB:
+    driver: bridge
+    ipam:
+      config:
+        - subnet: 10.0.15.0/24
+          gateway: 10.0.15.1
