@@ -1,0 +1,101 @@
+#!/bin/bash
+
+while getopts 's:m:r:u:e:h b' args;do
+	case $args in
+	    h)
+	        echo 'usage : bash orch -h -t -b -u <"list"> -s <"list"> -r <"list"> -e <options>'
+		echo 'E.g.,:'
+		echo 'Get help:'
+		echo 'bash orch -h'
+		echo 'Set test flag:'
+		echo '-t [Use with other parameters]'
+		echo 'Build up nodes:'
+		echo 'bash orch -b'
+		echo 'Start up containers:'
+		echo 'bash orch -u "ha hb r1 r2 r3"'
+		echo 'bash orch -u "r4"'
+		echo 'Stop containers:'
+		echo 'bash orch -s "r2"'
+		echo 'Set up OSPF on router containers:'
+		echo 'bash orch -r "r1 r2 r3"'
+		echo 'bash orch -r "r4"'
+		echo 'Step up routes on an endpoint:'
+		echo 'bash orch -e "ha 10.0.15.0/24 10.0.14.4"'
+		echo 'bash orch -e "hb 10.0.14.0/24 10.0.15.4"'
+		echo 'Set traffic path:'
+		echo 'bash orch -m <north|south>'
+	        ;;
+	    u)
+                echo 'use  -u :' $OPTARG
+		if [[ "$OPTARG" == "r4" ]]
+		then
+		    cd R4
+		    docker-compose up -d
+		    cd ..
+		fi		
+               
+                if [[ "$OPTARG" == "ha hb r1 r2 r3" ]]
+                then
+		    docker-compose up -d
+                fi
+		;;
+	    r)
+                echo 'use  -r :' $OPTARG
+		if [[ "$OPTARG" == "r1 r2 r3" ]]
+                then
+                    docker exec -ti lab1_R1_1 bash R1_config.sh
+		    docker exec -ti lab1_R2_1 bash R2_config.sh
+		    docker exec -ti lab1_R3_1 bash R3_config.sh
+                fi
+
+
+		if [[ "$OPTARG" == "r4" ]]
+                then
+                    docker exec -ti r4_R4_1 bash R4_config.sh
+                fi
+                ;;
+
+	    e)
+		echo 'use  -e :' $OPTARG
+                if [[ "$OPTARG" == "ha 10.0.15.0/24 10.0.14.4" ]]
+                then
+	            docker exec -ti lab1_hostA_1 route add -net 10.0.15.0/24 gw 10.0.14.4
+		fi
+
+		if [[ "$OPTARG" == "hb 10.0.14.0/24 10.0.15.4" ]]
+                then
+                    docker exec -ti lab1_hostB_1 route add -net 10.0.14.0/24 gw 10.0.15.4
+                fi
+		;;
+	    b)
+		echo 'use  -b :'
+		cd hostnode
+		docker build --tag my_node:1.0 .
+		cd ../router
+		docker build --tag my_node:2.0 .
+		cd ..
+		;;
+	    m)
+		echo 'use  -m :' $OPTARG
+		if [[ "$OPTARG" == "north" ]]
+                then
+                    docker exec -ti r4_R4_1 bash north.sh
+                fi
+		
+                if [[ "$OPTARG" == "south" ]]
+                then
+                    docker exec -ti r4_R4_1 bash south.sh
+                fi
+		;;
+	    s)
+		echo 'use  -s :' $OPTARG
+		if [[ "$OPTARG" == "r2" ]]
+                then
+		    docker stop lab1_R2_1
+                fi
+
+	esac
+done
+
+
+

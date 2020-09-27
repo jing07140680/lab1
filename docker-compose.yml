@@ -1,27 +1,45 @@
 version: '2.2'
 services:
-  router:
-    image: 'jing07140680/my_node:1.0'
+  R1:
+    image: 'my_node:2.0'
     privileged: true
     tty: true
     networks:
       my_netA:
-        ipv4_address: 10.0.14.2
+        ipv4_address: 10.0.14.4
       my_netB:
-        ipv4_address: 10.0.15.2
+        ipv4_address: 10.0.11.4
+  R2:
+    image: 'my_node:2.0'
+    privileged: true
+    tty: true
+    networks:
+      my_netB:
+        ipv4_address: 10.0.11.3
+      my_netC:
+        ipv4_address: 10.0.12.3
+  R3:
+    image: 'my_node:2.0'
+    privileged: true
+    tty: true
+    networks:
+      my_netC:
+        ipv4_address: 10.0.12.4
+      my_netD:
+        ipv4_address: 10.0.15.4
   hostA:
-    image: 'jing07140680/my_node:1.0'
+    image: 'my_node:1.0'
     privileged: true
     tty: true
     networks:
       my_netA:
         ipv4_address: 10.0.14.3
   hostB:
-    image: 'jing07140680/my_node:1.0'
+    image: 'my_node:1.0'
     privileged: true
     tty: true
     networks:
-      my_netB:
+      my_netD:
         ipv4_address: 10.0.15.3
 networks:
   my_netA:
@@ -34,5 +52,18 @@ networks:
     driver: bridge
     ipam:
       config:
+        - subnet: 10.0.11.0/24
+          gateway: 10.0.11.1
+  my_netC:
+    driver: bridge
+    ipam:
+      config:
+        - subnet: 10.0.12.0/24
+          gateway: 10.0.12.1
+  my_netD:
+    driver: bridge
+    ipam:
+      config:
         - subnet: 10.0.15.0/24
           gateway: 10.0.15.1
+

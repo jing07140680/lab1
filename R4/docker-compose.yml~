@@ -1,0 +1,14 @@
+version: '2.2'
+services:
+  R4:
+    image: 'my_node:2.0'
+    privileged: true
+    tty: true
+    networks:
+      my_netE:
+        ipv4_address: 10.0.11.2
+networks:
+  my_netE:
+    external:
+      name: lab1_my_netB
+
